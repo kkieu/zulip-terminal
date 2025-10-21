@@ -649,6 +649,7 @@ class MessageBox(urwid.Pile):
         # Content Header
         message = {
             key: {
+                "sender_id": msg.get("sender_id"), 
                 "is_starred": "starred" in msg["flags"],
                 "author": (
                     msg["sender_full_name"] if "sender_full_name" in msg else None
@@ -670,7 +671,7 @@ class MessageBox(urwid.Pile):
         }
         different = {  # How this message differs from the previous one
             "recipients": recipient_header is not None,
-            "author": message["this"]["author"] != message["last"]["author"],
+            "author": message["this"]["sender_id"] != message["last"]["sender_id"],
             "24h": (
                 message["last"]["datetime"] is not None
                 and ((message["this"]["datetime"] - message["last"]["datetime"]).days)
