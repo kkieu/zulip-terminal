@@ -648,29 +648,29 @@ class MessageBox(urwid.Pile):
 
         # Content Header
         message = {
-            key: {
-                "is_starred": "starred" in msg["flags"],
-                "author": (
-                    msg["sender_full_name"] if "sender_full_name" in msg else None
-                ),
-                "time": (
-                    self.model.formatted_local_time(
-                        msg["timestamp"], show_seconds=False
-                    )
-                    if "timestamp" in msg
-                    else None
-                ),
-                "datetime": (
-                    datetime.fromtimestamp(msg["timestamp"])
-                    if "timestamp" in msg
-                    else None
-                ),
-            }
-            for key, msg in dict(this=self.message, last=self.last_message).items()
-        }
+    key: {
+        "sender_id": msg.get("sender_id"),
+        "is_starred": "starred" in msg["flags"],
+        "author": msg.get("sender_full_name"),
+        "time": (
+            self.model.formatted_local_time(
+                msg["timestamp"], show_seconds=False
+            )
+            if "timestamp" in msg
+            else None
+        ),
+        "datetime": (
+            datetime.fromtimestamp(msg["timestamp"])
+            if "timestamp" in msg
+            else None
+        ),
+    }
+    for key, msg in dict(this=self.message, last=self.last_message).items()
+}
+
         different = {  # How this message differs from the previous one
             "recipients": recipient_header is not None,
-            "author": message["this"]["author"] != message["last"]["author"],
+            "author": message["this"]["sender_id"] != message["last"]["sender_id"],
             "24h": (
                 message["last"]["datetime"] is not None
                 and ((message["this"]["datetime"] - message["last"]["datetime"]).days)
