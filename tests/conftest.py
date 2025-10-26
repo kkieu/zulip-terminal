@@ -1075,14 +1075,14 @@ def empty_index(
             edited_messages=set(),
             topics=defaultdict(list),
             search=set(),
-            messages=defaultdict(
-                lambda: {},
+            messages = defaultdict(
+                dict,
                 {
                     stream_msg_template["id"]: stream_msg_template,
                     pm_template["id"]: pm_template,
                     group_pm_template["id"]: group_pm_template,
                 },
-            ),
+            )
         )
     )
 

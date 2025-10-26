@@ -648,13 +648,7 @@ def main(options: Optional[List[str]] = None) -> None:
         if args.debug:
             sys.stdout.flush()
             traceback.print_exc(file=sys.stderr)
-            run_debugger = input("Run Debugger? (y/n): ")
-            if run_debugger in ["y", "Y", "yes"]:
-                # Open PUDB Debugger
-                import pudb
-
-                pudb.post_mortem()
-
+            
         if hasattr(e, "extra_info"):
             print(in_color("red", f"\n{e.extra_info}"), file=sys.stderr)
 
