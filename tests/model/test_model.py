@@ -714,9 +714,11 @@ class TestModel:
             else model.user_id + 1
         )
         full_existing_reactions = [
-            dict(er, user={user_key: id})
-            if user_key is not None
-            else dict(user_id=id, emoji_code=er["emoji_code"])
+            (
+                dict(er, user={user_key: id})
+                if user_key is not None
+                else dict(user_id=id, emoji_code=er["emoji_code"])
+            )
             for er in existing_reactions
         ]
         message = dict(id=msg_id, reactions=full_existing_reactions)
@@ -1417,9 +1419,9 @@ class TestModel:
             initial_data["realm_edit_topic_policy"] = edit_topic_policy
         else:
             assert edit_topic_policy is None
-            initial_data[
-                "realm_allow_community_topic_editing"
-            ] = allow_community_topic_editing
+            initial_data["realm_allow_community_topic_editing"] = (
+                allow_community_topic_editing
+            )
         report_error = model.controller.report_error
 
         result = model.can_user_edit_topic()

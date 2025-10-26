@@ -289,12 +289,16 @@ class MessageBox(urwid.Pile):
 
             reaction_texts = [
                 (
-                    "reaction_mine"
-                    if my_user_id in [id[0] for id in ids]
-                    else "reaction",
-                    f" :{reaction}: {len(ids)} "
-                    if len(reactions) > MAXIMUM_USERNAMES_VISIBLE
-                    else f" :{reaction}: {', '.join([id[1] for id in ids])} ",
+                    (
+                        "reaction_mine"
+                        if my_user_id in [id[0] for id in ids]
+                        else "reaction"
+                    ),
+                    (
+                        f" :{reaction}: {len(ids)} "
+                        if len(reactions) > MAXIMUM_USERNAMES_VISIBLE
+                        else f" :{reaction}: {', '.join([id[1] for id in ids])} "
+                    ),
                 )
                 for reaction, ids in reaction_stats.items()
             ]
@@ -648,29 +652,30 @@ class MessageBox(urwid.Pile):
 
         # Content Header
         message = {
-    key: {
-        "sender_id": msg.get("sender_id"),
-        "is_starred": "starred" in msg["flags"],
-        "author": msg.get("sender_full_name"),
-        "time": (
-            self.model.formatted_local_time(
-                msg["timestamp"], show_seconds=False
-            )
-            if "timestamp" in msg
-            else None
-        ),
-        "datetime": (
-            datetime.fromtimestamp(msg["timestamp"])
-            if "timestamp" in msg
-            else None
-        ),
-    }
-    for key, msg in dict(this=self.message, last=self.last_message).items()
-}
+            key: {
+                "sender_id": msg.get("sender_id"),
+                "is_starred": "starred" in msg["flags"],
+                "author": msg.get("sender_full_name"),
+                "time": (
+                    self.model.formatted_local_time(
+                        msg["timestamp"], show_seconds=False
+                    )
+                    if "timestamp" in msg
+                    else None
+                ),
+                "datetime": (
+                    datetime.fromtimestamp(msg["timestamp"])
+                    if "timestamp" in msg
+                    else None
+                ),
+            }
+            for key, msg in dict(this=self.message, last=self.last_message).items()
+        }
         last_sender_id = message.get("last", {}).get("sender_id")
-        different = {  
+        different = {
             "recipients": recipient_header is not None,
-            "author": last_sender_id is None or message["this"]["sender_id"] != last_sender_id,
+            "author": last_sender_id is None
+            or message["this"]["sender_id"] != last_sender_id,
             "24h": (
                 message.get("last", {}).get("datetime") is not None
                 and ((message["this"]["datetime"] - message["last"]["datetime"]).days)
@@ -680,7 +685,8 @@ class MessageBox(urwid.Pile):
                 and message["this"]["time"] != message["last"]["time"]
             ),
             "star_status": (
-                message["this"]["is_starred"] != message.get("last", {}).get("is_starred")
+                message["this"]["is_starred"]
+                != message.get("last", {}).get("is_starred")
             ),
         }
         any_differences = any(different.values())
@@ -861,12 +867,9 @@ class MessageBox(urwid.Pile):
         author_changed = last_sender_id != current_sender_id
         self.author_status = author_changed
         return author_changed
-    
+
     @classmethod
-    
-    def transform_content(
-        cls, content: Any, server_url: str
-    ) -> Tuple[
+    def transform_content(cls, content: Any, server_url: str) -> Tuple[
         Tuple[None, Any],
         Dict[str, Tuple[str, int, bool]],
         List[Tuple[str, str]],

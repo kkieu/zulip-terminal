@@ -171,9 +171,11 @@ def sort_unread_topics(
     return sorted(
         unread_topics.keys(),
         key=lambda stream_topic: (
-            stream_list.index(stream_topic[0])
-            if stream_topic[0] in stream_list
-            else len(stream_list),
+            (
+                stream_list.index(stream_topic[0])
+                if stream_topic[0] in stream_list
+                else len(stream_list)
+            ),
             stream_topic[1],
         ),
     )

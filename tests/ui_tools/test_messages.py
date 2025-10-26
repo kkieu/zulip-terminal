@@ -1174,19 +1174,25 @@ class TestMessageBox:
 
             label = view_components[0].original_widget.contents[0]
             assert label[0].text == "EDITED"
-            assert label[1][1] == 7       
-            
+            assert label[1][1] == 7
+
     @pytest.mark.parametrize(
         "to_vary_in_last_message, update_required",
-    [
-        ({"sender_id": 999, "sender_full_name": "Unique name (won't be in next message)"}, True),
-        ({}, False),
-    ],
-    ids=[
-        "author_field_present",
-        "author_field_not_present",
-    ],
- )
+        [
+            (
+                {
+                    "sender_id": 999,
+                    "sender_full_name": "Unique name (won't be in next message)",
+                },
+                True,
+            ),
+            ({}, False),
+        ],
+        ids=[
+            "author_field_present",
+            "author_field_not_present",
+        ],
+    )
     def test_update_message_author_status(
         self,
         message_fixture,
@@ -1933,7 +1939,7 @@ class TestMessageBox:
         """Test that users with same name but different IDs are treated as different authors."""
         self.model.formatted_local_time.return_value = "12:00"
         self.model.user_dict = {}
-        
+
         msg1 = {
             "id": 1,
             "type": "stream",
@@ -1948,10 +1954,10 @@ class TestMessageBox:
             "reactions": [],
             "is_me_message": False,
         }
-        
+
         msg2 = {
             "id": 2,
-            "type": "stream", 
+            "type": "stream",
             "display_recipient": "test",
             "stream_id": 1,
             "subject": "test",
@@ -1963,10 +1969,10 @@ class TestMessageBox:
             "reactions": [],
             "is_me_message": False,
         }
-        
+
         msg_box = MessageBox(msg2, self.model, msg1)
         view_components = msg_box.main_view()
-        
+
         assert len(view_components) == 2
         content_header = view_components[0]
         author_widget = content_header.widget_list[1]
