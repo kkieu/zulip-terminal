@@ -1939,7 +1939,8 @@ class TestMessageBox:
         """Test that users with same name but different IDs are treated as different authors."""
         self.model.formatted_local_time.return_value = "12:00"
         self.model.user_dict = {}
-
+        
+        # First message from user with ID 1 and name "John"
         msg1 = {
             "id": 1,
             "type": "stream",
@@ -1954,10 +1955,11 @@ class TestMessageBox:
             "reactions": [],
             "is_me_message": False,
         }
-
+        
+        # Second message from different user with ID 2 but same name "John"
         msg2 = {
             "id": 2,
-            "type": "stream",
+            "type": "stream", 
             "display_recipient": "test",
             "stream_id": 1,
             "subject": "test",
@@ -1969,11 +1971,15 @@ class TestMessageBox:
             "reactions": [],
             "is_me_message": False,
         }
-
+        
+        # msg2 as current message and msg1 as previous message
         msg_box = MessageBox(msg2, self.model, msg1)
         view_components = msg_box.main_view()
-
+        
+        # Test that the message is rendered with a header
         assert len(view_components) == 2
+        
+        # Verify the name is displayed
         content_header = view_components[0]
         author_widget = content_header.widget_list[1]
         assert author_widget.text == "John"
