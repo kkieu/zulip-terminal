@@ -853,19 +853,13 @@ class MessageBox(urwid.Pile):
 
     def update_message_author_status(self) -> bool:
         """
-        Update the author status by checking if the message author has changed
-        compared to the last message.
+        Return True if the author of the current message differs from last message.
         """
         last_sender_id = self.last_message.get("sender_id")
-        current_sender_id = self.message["sender_id"]
+        current_sender_id = self.message.get("sender_id")
 
-    # Check if author has changed
         author_changed = last_sender_id != current_sender_id
-
-        if author_changed:
-        # Update the message box if author changed
-            super().__init__(self.main_view())
-
+        self.author_status = author_changed
         return author_changed
     
     @classmethod
