@@ -866,7 +866,7 @@ class MessageBox(urwid.Pile):
         # Update the message box if author changed
             super().__init__(self.main_view())
 
-            return author_changed
+        return author_changed
     
     @classmethod
     
