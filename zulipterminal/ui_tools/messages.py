@@ -667,20 +667,20 @@ class MessageBox(urwid.Pile):
     }
     for key, msg in dict(this=self.message, last=self.last_message).items()
 }
-        last_sender_id = message["last"]["sender_id"] if "last" in message else None
-        different = {  # How this message differs from the previous one
+        last_sender_id = message.get("last", {}).get("sender_id")
+        different = {  
             "recipients": recipient_header is not None,
-            "author": message["this"]["sender_id"] != message["last"]["sender_id"],
+            "author": last_sender_id is None or message["this"]["sender_id"] != last_sender_id,
             "24h": (
-                message["last"]["datetime"] is not None
+                message.get("last", {}).get("datetime") is not None
                 and ((message["this"]["datetime"] - message["last"]["datetime"]).days)
             ),
             "timestamp": (
-                message["last"]["time"] is not None
+                message.get("last", {}).get("time") is not None
                 and message["this"]["time"] != message["last"]["time"]
             ),
             "star_status": (
-                message["this"]["is_starred"] != message["last"]["is_starred"]
+                message["this"]["is_starred"] != message.get("last", {}).get("is_starred")
             ),
         }
         any_differences = any(different.values())
