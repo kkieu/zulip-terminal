@@ -650,24 +650,20 @@ class MessageBox(urwid.Pile):
         message = {
     key: {
         "sender_id": msg.get("sender_id"),
-        "is_starred": "starred" in msg["flags"],
+        "is_starred": "starred" in msg.get("flags", []),
         "author": msg.get("sender_full_name"),
         "time": (
-            self.model.formatted_local_time(
-                msg["timestamp"], show_seconds=False
-            )
-            if "timestamp" in msg
-            else None
+            self.model.formatted_local_time(msg["timestamp"], show_seconds=False)
+            if "timestamp" in msg else None
         ),
         "datetime": (
             datetime.fromtimestamp(msg["timestamp"])
-            if "timestamp" in msg
-            else None
+            if "timestamp" in msg else None
         ),
     }
-    for key, msg in dict(this=self.message, last=self.last_message).items()
+    for key, msg in dict(this=self.message, last=self.last_message or {}).items()
 }
-
+        last_sender_id = message["last"]["sender_id"] if "last" in message else None
         different = {  # How this message differs from the previous one
             "recipients": recipient_header is not None,
             "author": message["this"]["sender_id"] != message["last"]["sender_id"],
@@ -693,10 +689,8 @@ class MessageBox(urwid.Pile):
                 text["author"] = ("msg_sender", message["this"]["author"])
 
                 # TODO: Refactor to use user ids for look up instead of emails.
-                email = self.message.get("sender_email", "")
-                user = self.model.user_dict.get(email, None)
-                # TODO: Currently status of bots are shown as `inactive`.
-                # Render bot users' status with bot marker as a follow-up
+                sender_id = message["this"]["sender_id"]
+                user = self.model.user_dict.get(sender_id)
                 status = user.get("status", "inactive") if user else "inactive"
 
                 # The default text['status'] value is (None, ' ')
