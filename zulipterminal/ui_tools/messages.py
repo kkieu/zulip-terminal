@@ -650,18 +650,22 @@ class MessageBox(urwid.Pile):
         message = {
     key: {
         "sender_id": msg.get("sender_id"),
-        "is_starred": "starred" in msg.get("flags", []),
+        "is_starred": "starred" in msg["flags"],
         "author": msg.get("sender_full_name"),
         "time": (
-            self.model.formatted_local_time(msg["timestamp"], show_seconds=False)
-            if "timestamp" in msg else None
+            self.model.formatted_local_time(
+                msg["timestamp"], show_seconds=False
+            )
+            if "timestamp" in msg
+            else None
         ),
         "datetime": (
             datetime.fromtimestamp(msg["timestamp"])
-            if "timestamp" in msg else None
+            if "timestamp" in msg
+            else None
         ),
     }
-    for key, msg in dict(this=self.message, last=self.last_message or {}).items()
+    for key, msg in dict(this=self.message, last=self.last_message).items()
 }
         last_sender_id = message["last"]["sender_id"] if "last" in message else None
         different = {  # How this message differs from the previous one
