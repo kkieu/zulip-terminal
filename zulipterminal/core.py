@@ -7,8 +7,8 @@ import os
 import signal
 import sys
 import time
-import webbrowser
 import traceback
+import webbrowser
 from functools import partial
 from platform import platform
 from types import TracebackType

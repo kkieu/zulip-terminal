@@ -4,21 +4,21 @@ Marks the entry point into the application
 
 import argparse
 import configparser
+import cProfile
 import logging
 import os
 import stat
 import sys
-import traceback
-import cProfile
-import pudb
 import tempfile
+import traceback
 from enum import Enum
+from getpass import getpass
 from os import path, remove
 from typing import Dict, List, NamedTuple, Optional, Tuple
 
 import requests
 from urwid import display_common, set_encoding
-from getpass import getpass
+
 from zulipterminal.api_types import ServerSettings
 from zulipterminal.config.themes import (
     ThemeError,

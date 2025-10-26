@@ -4,6 +4,7 @@ Defines the `Model`, fetching and storing data retrieved from the Zulip server
 
 import itertools
 import json
+import sys
 import time
 from collections import defaultdict
 from concurrent.futures import Future, ThreadPoolExecutor, wait
@@ -26,7 +27,6 @@ from typing import (
 from urllib.parse import urlparse
 
 import zulip
-import sys
 from bs4 import BeautifulSoup
 from typing_extensions import TypedDict
 
