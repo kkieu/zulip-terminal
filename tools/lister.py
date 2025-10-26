@@ -21,8 +21,7 @@ def get_ftype(fpath: str, use_shebang: bool) -> str:
                 return "py"
             elif re.search(r"^#!", first_line):
                 print(
-                    "Error: Unknown shebang in file"
-                    f' "{fpath}":\n{first_line}',
+                    "Error: Unknown shebang in file" f' "{fpath}":\n{first_line}',
                     file=sys.stderr,
                 )
                 return ""
