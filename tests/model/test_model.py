@@ -4663,9 +4663,7 @@ class TestModel:
         self, mocker, model, unread_topics, current_topic, next_unread_topic
     ):
         # NOTE Not important how many unreads per topic, so just use '1'
-        model.unread_counts = {
-            "unread_topics": {stream_topic: 1 for stream_topic in unread_topics}
-        }
+        model.unread_counts = {"unread_topics": dict.fromkeys(unread_topics, 1)}
 
         current_message_id = 10  # Arbitrary value due to mock below
         model.stream_topic_from_message_id = mocker.Mock(return_value=current_topic)
@@ -4691,14 +4689,13 @@ class TestModel:
         ]
 
         # date data unimportant (if present)
-        model._muted_topics = {
-            stream_topic: None
-            for stream_topic in [
+        model._muted_topics = dict.fromkeys(
+            [
                 ("Stream 2", "muted topic2"),
                 ("Stream 2", "topic2 muted"),
                 ("Stream 3", "topic3 muted"),
             ]
-        }
+        )
 
         unread_topic = model.next_unread_topic_from_message_id(current_message_id)
 
@@ -4725,9 +4722,7 @@ class TestModel:
         next_unread_topic,
     ):
         # NOTE Not important how many unreads per topic, so just use '1'
-        model.unread_counts = {
-            "unread_topics": {stream_topic: 1 for stream_topic in unread_topics}
-        }
+        model.unread_counts = {"unread_topics": dict.fromkeys(unread_topics, 1)}
         model.pinned_streams = [
             {"name": "Stream 1", "id": 1},
             {"name": "Stream 2", "id": 2},

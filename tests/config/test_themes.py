@@ -133,9 +133,7 @@ def test_complete_and_incomplete_themes__single_theme_completeness(
 
     class FakeTheme:
         Color = FakeColor
-        STYLES = {
-            style: (FakeColor.COLOR_1, FakeColor.COLOR_2) for style in REQUIRED_STYLES
-        }
+        STYLES = dict.fromkeys(REQUIRED_STYLES, (FakeColor.COLOR_1, FakeColor.COLOR_2))
         META: Dict[str, Any] = {
             "pygments": {
                 "styles": None,
