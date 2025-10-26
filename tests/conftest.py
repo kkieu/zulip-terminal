@@ -422,7 +422,7 @@ def zulip_emoji() -> "OrderedDict[str, Dict[str, Any]]":
 
 
 def display_recipient_factory(
-    recipient_details_list: List[Tuple[int, str]]
+    recipient_details_list: List[Tuple[int, str]],
 ) -> List[Dict[str, Any]]:
     """
     Generate display_recipient field for (PM/group) messages
@@ -1076,7 +1076,7 @@ def empty_index(
             topics=defaultdict(list),
             search=set(),
             messages=defaultdict(
-                lambda: {},
+                dict,
                 {
                     stream_msg_template["id"]: stream_msg_template,
                     pm_template["id"]: pm_template,

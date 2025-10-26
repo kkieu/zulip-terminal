@@ -2,6 +2,7 @@
 Marks the entry point into the application
 """
 
+import pudb  # type: ignore[import]
 import argparse
 import configparser
 import cProfile
@@ -647,9 +648,9 @@ def main(options: Optional[List[str]] = None) -> None:
         if args.debug:
             sys.stdout.flush()
             traceback.print_exc(file=sys.stderr)
-            run_debugger = input("Run Debugger? (y/n): ")
-            if run_debugger in ["y", "Y", "yes"]:
-                pudb.post_mortem()
+        run_debugger = input("Run Debugger? (y/n): ")
+        if run_debugger in ["y", "Y", "yes"]:
+            pudb.post_mortem()  # type: ignore[attr-defined]
 
         if hasattr(e, "extra_info"):
             print(in_color("red", f"\n{e.extra_info}"), file=sys.stderr)
