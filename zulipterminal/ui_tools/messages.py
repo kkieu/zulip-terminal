@@ -853,25 +853,21 @@ class MessageBox(urwid.Pile):
 
     def update_message_author_status(self) -> bool:
         """
-        Update the author status by resetting the entire message box
-        if author field is present.
+        Update the author status by checking if the message author has changed.
         """
-        author_is_present = False
-        author_column = 1  # Index of author field in content header
+        current_sender_id = self.message["sender_id"]
+        last_sender_id = getattr(self, "_last_sender_id", None)
 
-        if len(self.header) > 0:
-            # -1 represents that content header is the last row of header field
-            author_field = self.header[-1][author_column]
-            author_is_present = author_field.text != " "
-
-        if author_is_present:
-            # Re initialize the message if update is required.
-            # FIXME: Render specific element (here author field) instead?
+        if last_sender_id != current_sender_id:
+        # Update the stored last sender ID
+            self._last_sender_id = current_sender_id
+        # Re-initialize the message box (if needed)
             super().__init__(self.main_view())
+            return True  # Signal that an update is required
 
-        return author_is_present
-
+        return False  # No change
     @classmethod
+    
     def transform_content(
         cls, content: Any, server_url: str
     ) -> Tuple[
