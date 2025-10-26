@@ -1056,6 +1056,7 @@ class TestMessageBox:
                 "is_me_message": False,
                 "content": "<p>what are you planning to do this week</p>",
                 "reactions": [],
+                "sender_id": 123,
                 "sender_full_name": "alice",
                 "timestamp": 1532103879,
             }
@@ -1074,13 +1075,18 @@ class TestMessageBox:
         [
             (
                 [STATUS_INACTIVE, "alice", " ", "DAYDATETIME"],
-                {"sender_full_name": "bob"},
+                {"sender_id": 456, "sender_full_name": "bob"},
+            ),
+            (
+                [STATUS_INACTIVE, "alice", " ", "DAYDATETIME"],
+                {"sender_id": 999, "sender_full_name": "alice"},
             ),
             ([" ", " ", " ", "DAYDATETIME"], {"timestamp": 1532103779}),
             ([STATUS_INACTIVE, "alice", " ", "DAYDATETIME"], {"timestamp": 0}),
         ],
         ids=[
             "show_author_as_authors_different",
+            "show_author_as_same_name_different_ids",
             "merge_messages_as_only_slightly_earlier_message",
             "dont_merge_messages_as_much_earlier_message",
         ],
@@ -1168,19 +1174,19 @@ class TestMessageBox:
 
             label = view_components[0].original_widget.contents[0]
             assert label[0].text == "EDITED"
-            assert label[1][1] == 7
-
+            assert label[1][1] == 7       
+            
     @pytest.mark.parametrize(
         "to_vary_in_last_message, update_required",
-        [
-            ({"sender_full_name": "Unique name (won't be in next message)"}, True),
-            ({}, False),
-        ],
-        ids=[
-            "author_field_present",
-            "author_field_not_present",
-        ],
-    )
+    [
+        ({"sender_id": 999, "sender_full_name": "Unique name (won't be in next message)"}, True),
+        ({}, False),
+    ],
+    ids=[
+        "author_field_present",
+        "author_field_not_present",
+    ],
+ )
     def test_update_message_author_status(
         self,
         message_fixture,
@@ -1922,3 +1928,46 @@ class TestMessageBox:
             msg_box.keypress.assert_not_called()
         else:
             msg_box.keypress.assert_called_once_with(size, expected_keypress)
+
+    def test_same_name_different_ids(self, mocker):
+        """Test that users with same name but different IDs are treated as different authors."""
+        self.model.formatted_local_time.return_value = "12:00"
+        self.model.user_dict = {}
+        
+        msg1 = {
+            "id": 1,
+            "type": "stream",
+            "display_recipient": "test",
+            "stream_id": 1,
+            "subject": "test",
+            "sender_id": 1,
+            "sender_full_name": "John",
+            "content": "First",
+            "timestamp": 1,
+            "flags": [],
+            "reactions": [],
+            "is_me_message": False,
+        }
+        
+        msg2 = {
+            "id": 2,
+            "type": "stream", 
+            "display_recipient": "test",
+            "stream_id": 1,
+            "subject": "test",
+            "sender_id": 2,
+            "sender_full_name": "John",
+            "content": "Second",
+            "timestamp": 2,
+            "flags": [],
+            "reactions": [],
+            "is_me_message": False,
+        }
+        
+        msg_box = MessageBox(msg2, self.model, msg1)
+        view_components = msg_box.main_view()
+        
+        assert len(view_components) == 2
+        content_header = view_components[0]
+        author_widget = content_header.widget_list[1]
+        assert author_widget.text == "John"
