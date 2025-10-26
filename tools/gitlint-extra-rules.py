@@ -47,9 +47,7 @@ class AreaFormatting(CommitRule):
         def deny_capital_text(text: str) -> bool:
             if text in exclusions:
                 return False
-            if not text.islower():
-                return True
-            return False
+            return bool(not text.islower())
 
         for area in title_components[:-1]:
             if any(deny_capital_text(word) for word in area.split("/")) or " " in area:

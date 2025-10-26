@@ -9,13 +9,16 @@ import os
 import stat
 import sys
 import traceback
+import cProfile
+import pudb
+import tempfile
 from enum import Enum
 from os import path, remove
 from typing import Dict, List, NamedTuple, Optional, Tuple
 
 import requests
 from urwid import display_common, set_encoding
-
+from getpass import getpass
 from zulipterminal.api_types import ServerSettings
 from zulipterminal.config.themes import (
     ThemeError,
@@ -258,8 +261,6 @@ def get_server_settings(realm_url: str) -> ServerSettings:
 
 
 def get_api_key(realm_url: str) -> Optional[Tuple[str, str, str]]:
-    from getpass import getpass
-
     try:
         server_properties = get_server_settings(realm_url)
     except NotAZulipOrganizationError:
@@ -438,8 +439,6 @@ def main(options: Optional[List[str]] = None) -> None:
         requests_logger.addHandler(logging.NullHandler())
 
     if args.profile:
-        import cProfile
-
         prof = cProfile.Profile()
         prof.enable()
 
@@ -650,9 +649,6 @@ def main(options: Optional[List[str]] = None) -> None:
             traceback.print_exc(file=sys.stderr)
             run_debugger = input("Run Debugger? (y/n): ")
             if run_debugger in ["y", "Y", "yes"]:
-                # Open PUDB Debugger
-                import pudb
-
                 pudb.post_mortem()
 
         if hasattr(e, "extra_info"):
@@ -678,8 +674,6 @@ def main(options: Optional[List[str]] = None) -> None:
     finally:
         if args.profile:
             prof.disable()
-            import tempfile
-
             with tempfile.NamedTemporaryFile(
                 prefix="zulip_term_profile.", suffix=".dat", delete=False
             ) as profile_file:

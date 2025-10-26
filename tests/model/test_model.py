@@ -2176,7 +2176,7 @@ class TestModel:
         event = {
             "type": "message",
             "message": response,
-            "flags": response["flags"] if "flags" in response else [],
+            "flags": response.get("flags", []),
         }
 
         model._handle_message_event(event)

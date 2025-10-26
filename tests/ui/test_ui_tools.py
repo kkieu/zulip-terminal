@@ -659,7 +659,6 @@ class TestTopicsView:
     def test_update_topics(self, mocker, topic_view, new_text, expected_log):
         topic_names = ["FOO", "FOOBAR", "foo", "fan", "boo", "BOO", "bar", "(no topic)"]
         self.view.controller.is_in_editor_mode = lambda: True
-        new_text = new_text
         search_box = topic_view.topic_search_box
         topic_view.topics_btn_list = [
             mocker.Mock(topic_name=topic_name) for topic_name in topic_names

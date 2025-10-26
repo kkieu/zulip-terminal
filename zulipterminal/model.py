@@ -26,6 +26,7 @@ from typing import (
 from urllib.parse import urlparse
 
 import zulip
+import sys
 from bs4 import BeautifulSoup
 from typing_extensions import TypedDict
 
@@ -850,7 +851,7 @@ class Model:
             topic_links = [
                 {"url": link, "text": ""}
                 for link in message["topic_links"]
-                if type(link) == str
+                if isinstance(link, str)
             ]
             if topic_links:
                 message["topic_links"] = topic_links
@@ -2169,7 +2170,6 @@ class Model:
                     try:
                         self.event_actions[event["type"]](event)
                     except Exception:
-                        import sys
 
                         self.controller.raise_exception_in_main_thread(
                             sys.exc_info(), critical=False

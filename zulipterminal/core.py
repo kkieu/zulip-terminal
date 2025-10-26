@@ -8,6 +8,7 @@ import signal
 import sys
 import time
 import webbrowser
+import traceback
 from functools import partial
 from platform import platform
 from types import TracebackType
@@ -693,7 +694,6 @@ class Controller:
             if self._critical_exception:
                 raise exc[0].with_traceback(exc[1], exc[2])
             else:
-                import traceback
 
                 exception_logfile = "zulip-terminal-thread-exceptions.log"
                 with open(exception_logfile, "a") as logfile:
